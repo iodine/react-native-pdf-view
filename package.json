@@ -24,6 +24,6 @@
     "url": "https://github.com/cnjon/react-native-pdf-view/issues"
   },
   "peerDependencies": {
-    "react-native": "^0.21.0"
+    "react-native": "^0.17.0"
   }
 }
