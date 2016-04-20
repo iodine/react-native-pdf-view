@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cnjon/react-native-pdf-view.git"
+    "url": "git+https://github.com/iodine/react-native-pdf-view.git"
   },
   "keywords": [
     "react-component",
