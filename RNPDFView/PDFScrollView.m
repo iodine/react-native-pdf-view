@@ -2,14 +2,14 @@
      File: PDFScrollView.m
  Abstract: UIScrollView subclass that handles the user input to zoom the PDF page.  This class handles swapping the TiledPDFViews when the zoom level changes.
   Version: 3.1
- 
+
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
  terms, and your use, installation, modification or redistribution of
  this Apple software constitutes acceptance of these terms.  If you do
  not agree with these terms, please do not use, install, modify or
  redistribute this Apple software.
- 
+
  In consideration of your agreement to abide by the following terms, and
  subject to these terms, Apple grants you a personal, non-exclusive
  license, under Apple's copyrights in this original Apple software (the
@@ -25,13 +25,13 @@
  implied, are granted by Apple herein, including but not limited to any
  patent rights that may be infringed by your derivative works or by other
  works in which the Apple Software may be incorporated.
- 
+
  The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
  MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
  THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
  FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
  OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
- 
+
  IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -40,9 +40,9 @@
  AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
- 
+
  Copyright (C) 2014 Apple Inc. All Rights Reserved.
- 
+
  */
 
 #import "PDFScrollView.h"
@@ -80,7 +80,7 @@
     self.decelerationRate = UIScrollViewDecelerationRateFast;
     self.delegate = self;
     self.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    self.layer.borderWidth = 5;    
+    self.layer.borderWidth = 0;
     self.minimumZoomScale = .25;
     self.maximumZoomScale = 5;
 }
@@ -91,7 +91,7 @@
     if( PDFPage != NULL ) CGPDFPageRetain(PDFPage);
     if( _PDFPage != NULL ) CGPDFPageRelease(_PDFPage);
     _PDFPage = PDFPage;
-    
+
     // PDFPage is null if we're requested to draw a padded blank page by the parent UIPageViewController
     if( PDFPage == NULL ) {
         self.pageRect = self.bounds;
@@ -117,35 +117,35 @@
 
 // Use layoutSubviews to center the PDF page in the view.
 
-- (void)layoutSubviews 
+- (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
     //NSLog(@"%s bounds: %@",__PRETTY_FUNCTION__,NSStringFromCGRect(self.bounds));
-    
+
     // Center the image as it becomes smaller than the size of the screen.
-    
+
     CGSize boundsSize = self.bounds.size;
-        
+
     CGRect frameToCenter = self.tiledPDFView.frame;
-    
+
     // Center horizontally.
-    
+
     if (frameToCenter.size.width < boundsSize.width)
         frameToCenter.origin.x = (boundsSize.width - frameToCenter.size.width) / 2;
     else
         frameToCenter.origin.x = 0;
-    
+
     // Center vertically.
-    
+
     if (frameToCenter.size.height < boundsSize.height)
         frameToCenter.origin.y = (boundsSize.height - frameToCenter.size.height) / 2;
     else
         frameToCenter.origin.y = 0;
-    
+
     self.tiledPDFView.frame = frameToCenter;
     self.backgroundImageView.frame = frameToCenter;
-    
+
     /*
      To handle the interaction between CATiledLayer and high resolution screens, set the tiling view's contentScaleFactor to 1.0.
      If this step were omitted, the content scale factor would be 2.0 on high resolution screens, which would cause the CATiledLayer to ask for tiles of the wrong scale.
@@ -176,7 +176,7 @@
     NSLog(@"%s scrollView.zoomScale=%f",__PRETTY_FUNCTION__,self.zoomScale);
     // Remove back tiled view.
     [self.oldTiledPDFView removeFromSuperview];
-    
+
     // Set the current TiledPDFView to be the old view.
     self.oldTiledPDFView = self.tiledPDFView;
     //[self addSubview:self.oldTiledPDFView];
@@ -188,7 +188,7 @@
  When the user stops zooming, create a new TiledPDFView based on the new zoom level and draw it on top of the old TiledPDFView.
  */
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
-    
+
     NSLog(@"BEFORE  %s scale=%f, _PDFScale=%f",__PRETTY_FUNCTION__,scale,_PDFScale);
     // Set the new scale factor for the TiledPDFView.
     _PDFScale *= scale;
