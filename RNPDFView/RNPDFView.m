@@ -33,7 +33,7 @@
   if ((self = [super init])) {
     _tiledPDFView = [[TiledPDFView alloc] initWithFrame:self.bounds scale:_PDFScale];
   }
-  
+
   return self;
 }
 
@@ -57,7 +57,7 @@
     NSLog(@"null path");
   } else {
     NSLog(@"not null: %@", self.path);
-  
+
     NSURL *pdfURL = [NSURL fileURLWithPath:self.path];
     _pdf = CGPDFDocumentCreateWithURL( (__bridge CFURLRef) pdfURL );
     _numberOfPages = (int)CGPDFDocumentGetNumberOfPages( _pdf );
@@ -67,9 +67,9 @@
     } else {
       _page = CGPDFDocumentGetPage( _pdf, 1 );
     }
-    
+
     NSLog(@"self.page==NULL? %@",_page==NULL?@"yes":@"no");
-    
+
     _pdfScrollView = [[PDFScrollView alloc] initWithFrame:self.bounds];
     _pdfScrollView.PDFScale = 1;
     [_pdfScrollView setPDFPage:_page];
@@ -117,9 +117,9 @@
   CGRect pageRect = CGPDFPageGetBoxRect( _page, kCGPDFMediaBox );
   CGFloat yScale = self.bounds.size.height/pageRect.size.height;
   CGFloat xScale = self.bounds.size.width/pageRect.size.width;
-  CGFloat myScale = MIN( xScale, yScale );
+  CGFloat myScale = xScale;
   NSLog(@"%s self.myScale=%f",__PRETTY_FUNCTION__, myScale);
-  
+
   _pdfScrollView.frame = self.bounds;
   _pdfScrollView.zoomScale = (_zoom == NULL ? 1.0 : [_zoom doubleValue]);
   _pdfScrollView.PDFScale = myScale;
@@ -129,7 +129,11 @@
   NSLog(@"onChange==NULL? %@",_onChange==NULL?@"yes":@"no");
   if(_onChange){
     NSLog(@"onChange %d", _numberOfPages);
-    _onChange(@{ @"message": @(_numberOfPages) });
+    _onChange(@{
+      @"numPages": @(_numberOfPages),
+      @"height": @(pageRect.size.height),
+      @"width": @(pageRect.size.width)
+    });
   }
 }
 

@@ -12,7 +12,12 @@ class PDFView extends Component {
   }
 
   _onChange(event:Event) {
-    this.props.onLoadComplete && this.props.onLoadComplete(Number(event.nativeEvent.message));
+    const {numPages, height, weight} = event.nativeEvent;
+    this.props.onLoadComplete && this.props.onLoadComplete({
+      numPages: Number(numPages),
+      height: Number(height),
+      width: Number(width)
+    });
   }
 
   render() {
