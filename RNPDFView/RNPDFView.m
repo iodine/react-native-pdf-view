@@ -131,8 +131,8 @@
     NSLog(@"onChange %d", _numberOfPages);
     _onChange(@{
       @"numPages": @(_numberOfPages),
-      @"height": @(pageRect.size.height),
-      @"width": @(pageRect.size.width)
+      @"height": @(myScale*pageRect.size.height),
+      @"width": @(myScale*pageRect.size.width)
     });
   }
 }
